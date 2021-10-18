@@ -1,5 +1,4 @@
 //MAIN - DB CONNECTION REQUIRED BEFORE LISTEN
-
 const express = require('express');
 const app = express();
 const addresses = require('./routes/addresses');

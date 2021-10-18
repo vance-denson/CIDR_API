@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+//SCHEMA SETUP WITH VALIDATION, 'Address' MODEL
 const addressSchema = new mongoose.Schema({
   address: {
     type: String,

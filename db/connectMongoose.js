@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const dbConnect = (uri) => {
-  console.log('MongoDB connected successfully');
+  console.log('Mongoose Connected!');
   return mongoose.connect(uri);
 };
 

@@ -3,15 +3,15 @@ const express = require('express');
 const router = express.Router();
 
 const {
-  getAllAddresses,
-  createCdirBlock,
+  listIpAddresses,
+  createIpAddresses,
   updateStatus,
 } = require('../controllers/addresses');
 
 router
   .route('/')
-  .get(getAllAddresses)
-  .post(createCdirBlock)
+  .get(listIpAddresses)
+  .post(createIpAddresses)
   .patch(updateStatus);
 
 module.exports = router;

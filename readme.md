@@ -14,14 +14,23 @@ Packages used in development:
   }
 ```
 
-## Usage
+## Usage Example
 
 Routes tested with Postman:
 
 ```
 GET: {{localhost:3000}}/api/cidr
+
 POST: {{localhost:3000}}/api/cidr
+- body:
+{"address":"10.0.0.1/24"}
+
 PATCH: {{localhost:3000}}/api/cidr
+- body:
+{
+  "address":"10.0.0.2"
+  "status":"acquired"
+}
 ```
 
 ## Task Requirements

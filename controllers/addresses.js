@@ -2,7 +2,7 @@ const Address = require('../models/address');
 const Netmask = require('netmask').Netmask;
 
 //GET ALL IP ADDRESSES CURRENTLY IN THE COLLECTION
-const getAllAddresses = async (req, res) => {
+const listIpAddresses = async (req, res) => {
   try {
     const addresses = await Address.find({});
     res.status(200).json({ addresses });
@@ -14,7 +14,7 @@ const getAllAddresses = async (req, res) => {
 };
 
 //DELETE PREVIOUS COLLECTION THEN POST A NEW WORKING BLOCK OF IPs BASED ON CIDR NOTATION GIVEN
-const createCdirBlock = async (req, res) => {
+const createIpAddresses = async (req, res) => {
   try {
     const { address: address, status: status } = req.body;
     const block = new Netmask(address);
@@ -72,7 +72,7 @@ const updateStatus = async (req, res) => {
 
 //CONTROLLERS CONSUMED BY ROUTES
 module.exports = {
-  getAllAddresses,
-  createCdirBlock,
+  listIpAddresses,
+  createIpAddresses,
   updateStatus,
 };
