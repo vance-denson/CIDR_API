@@ -4,7 +4,8 @@
   "description": "api fun",
   "main": "app.js",
   "scripts": {
-    "dev": "nodemon ./app.js"
+    "build": "tsc",
+    "dev": "nodemon ./dist/app.js"
   },
   "author": "Vance Denson",
   "license": "ISC",
@@ -14,6 +15,8 @@
     "netmask": "^2.0.2"
   },
   "devDependencies": {
+    "@types/express": "^4.17.13",
+    "@types/netmask": "^1.0.30",
     "dotenv": "^10.0.0",
     "nodemon": "^2.0.13"
   }

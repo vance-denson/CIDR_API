@@ -1,3 +1,15 @@
+## v1.1 - 10-23-2021
+
+- Refactored to JavaScript to TypeScript (code now organized into src / dist folders)
+
+```
+  "devDependencies": {
+   ++ "@types/express": "^4.17.13",
+   ++ "@types/netmask": "^1.0.30",
+```
+
+## v1.0 - 10-18-2021
+
 Packages used in development:
 
 ---
