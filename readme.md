@@ -1,16 +1,54 @@
-## v1.1 - 10-23-2021
+## Usage
 
-- Refactored to JavaScript to TypeScript (code now organized into src / dist folders)
+Supported Routes:
 
 ```
-  "devDependencies": {
-   ++ "@types/express": "^4.17.13",
-   ++ "@types/netmask": "^1.0.30",
+GET: {{localhost:3000}}/api/cidr
+
+GET: {{localhost:3000}}/api/cidr?addr=
+- example: {GET /api/cidr?addr=10.0.0.1}
+
+POST: {{localhost:3000}}/api/cidr
+- body:
+{"address":"10.0.0.1/24"}
+
+PATCH: {{localhost:3000}}/api/cidr
+- body:
+{
+  "address":"10.0.0.2"
+  "status":"acquired"
+}
+
+DELETE: {{localhost:3000}}/api/cidr
+- body:
+{"address":"10.0.0.1"}
+
+```
+
+## v1.1 - 10-24-2021
+
+- Refactored all to TypeScript
+- Added Mocha (test runner) and Chai (Assertion library - underlying package & syntax of Postman tests)
+- Added DELETE and GET /:addr paths
+- Chai tests added to /test, organzied by function
+-
+
+### `npm run test`
+
+Added Packages:
+
+```
+  Dependencies and Types added: {
+    "chai": "^4.3.4", - Assert library Postman based on
+    "mocha": "^9.1.3", - Test Runner
+    "supertest": "^6.1.6", - HTTP requests
+    "ts-node": "^10.4.0", - Types for node
+    "tsconfig-paths": "^3.11.0" - Assists with path resolution
 ```
 
 ## v1.0 - 10-18-2021
 
-Packages used in development:
+Packages:
 
 ---
 
@@ -24,25 +62,6 @@ Packages used in development:
     "dotenv": "^10.0.0",
     "nodemon": "^2.0.13"
   }
-```
-
-## Usage Example
-
-Routes tested with Postman:
-
-```
-GET: {{localhost:3000}}/api/cidr
-
-POST: {{localhost:3000}}/api/cidr
-- body:
-{"address":"10.0.0.1/24"}
-
-PATCH: {{localhost:3000}}/api/cidr
-- body:
-{
-  "address":"10.0.0.2"
-  "status":"acquired"
-}
 ```
 
 ## Task Requirements

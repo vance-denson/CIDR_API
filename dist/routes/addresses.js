@@ -8,5 +8,7 @@ router
     .route('/')
     .get(addresses_1.listIpAddresses)
     .post(addresses_1.createIpAddresses)
-    .patch(addresses_1.updateStatus);
+    .patch(addresses_1.updateStatus)
+    .delete(addresses_1.deleteAddress, addresses_1.listIpAddresses);
+router.route('/:addr').get(addresses_1.statusById).delete(addresses_1.deleteAddress);
 module.exports = router;

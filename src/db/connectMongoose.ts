@@ -1,18 +1,12 @@
 import mongoose from 'mongoose';
 
-// type uriInput = {
-//   db: string | undefined;
-// };
-
-export const dbConnect = (db: string) => {
+export const dbConnect = (credentials: string) => {
   try {
-    mongoose.connect(db, {}, () => {
-      return console.info(`Successful connection to ${db}`);
+    mongoose.connect(credentials, {}, () => {
+      return console.info(`Successful connection to ${credentials}`);
     });
   } catch (error) {
     console.error('Error connecting to database: ', error);
     return;
   }
-  console.log('Mongoose Connected!');
-  return mongoose.connect(db);
 };
