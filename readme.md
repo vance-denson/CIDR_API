@@ -1,39 +1,46 @@
 ## Usage
 
+- Clone
+
+- `npm install`
+
+- `node ./dist/app.js`
+
 Routes:
 
 ```
-POST: {{localhost:3000}}/api/cidr
-- body:
-{"address":"10.0.0.1/24"}
+1. POST {{HOST}}/api/cidr
+-> body:
+      {"address":"10.1.1.1/30"}
 
-GET: {{localhost:3000}}/api/cidr
+2. GET {{HOST}}/api/cidr
+-> body:
+      {"address":"10.1.1.1"}
 
-GET: {{localhost:3000}}/api/cidr?addr=
-- example: {GET /api/cidr?addr=10.0.0.1}
+3. GET {{HOST}}/api/cidr/{IP}
+-> example:
+      {"localhost:300/api/cidr/10.1.1.1"}
 
-PATCH: {{localhost:3000}}/api/cidr
-- body:
-{
-  "address":"10.0.0.2"
-  "status":"acquired"
-}
+4. PATCH {{HOST}}/api/cidr
+-> body:
+      { "address":"10.1.1.1"
+        "status":"acquired | available"}
 
-DELETE: {{localhost:3000}}/api/cidr
-- body:
-{"address":"10.0.0.1"}
+5. DELETE {{HOST}}/api/cidr
+-> body:
+      {"address":"10.1.1.1"}
 
+6. DELETE {{HOST}}/api/cidr/{IP}
+-> example:
+      {"DELETE ON localhost:3000/api/cidr/10.1.1.1"}
 ```
 
-## v1.1 - 10-24-2021
+## v202110.1.1 - 10-24-2021
 
 - Refactored all to TypeScript
-- Added Mocha (test runner) and Chai (Assertion library - underlying package & syntax of Postman tests)
-- Added DELETE and GET /:addr paths
-- Chai tests added to /test, organzied by function
--
-
-### `npm run test`
+- Integrated a test runner and Chai (Assertion library - underlying package / syntax used for Postman scripting). Boostrapped, tests to be added.
+- Added 2 DELETE routes and 1 GET route (/:IP-param )
+- Uniform msg, data, success response fields
 
 Added Packages:
 
@@ -46,11 +53,9 @@ Added Packages:
     "tsconfig-paths": "^3.11.0" - Assists with path resolution
 ```
 
-## v1.0 - 10-18-2021
+## v202110.1.0 - 10-18-2021
 
 Packages:
-
----
 
 ```
 "dependencies": {
