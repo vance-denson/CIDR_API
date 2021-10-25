@@ -9,48 +9,52 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteAddress = exports.updateStatus = exports.createIpAddresses = exports.statusById = exports.listIpAddresses = void 0;
+exports.deleteAddress = exports.updateStatus = exports.createIpAddresses = exports.statusByAddr = exports.listIpAddresses = void 0;
 const address_1 = require("../models/address");
 const netmask_1 = require("netmask");
-// const Netmask = require('netmask').Netmask;
-//GET ALL IP ADDRESSES CURRENTLY IN THE COLLECTION
 /**
- *
- * @param req
- * @param res
+ * GET All addresses in collection
+ * @param req Default route: void
+ * @param res Collection of addresses in DB
  */
 const listIpAddresses = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        //200 IF ADDR FOUND, 404 IF NO ADDRESSES IN COLLECTION
         const addresses = yield address_1.Address.find({});
+        if (addresses.length == 0) {
+            res
+                .status(404)
+                .json({ success: false, msg: `No addresses found`, data: [null] });
+        }
         res.status(200).json({ addresses });
     }
     catch (error) {
-        res
-            .status(500)
-            .json({ success: false, msg: `No addresses found`, data: [] });
+        res.status(500);
     }
 });
 exports.listIpAddresses = listIpAddresses;
 /**
- * CREATE IP BLOCK
- * @param req Block to add in CIDR notation '10.0.0.1/28'
- * @param res Descrition of created IP block
+ * GET STATUS BY IP ADDRESS
+ * @param req IP address from URL param
+ * @param res Address requested and current status
  */
-const statusById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const statusByAddr = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { addr: ipAddress } = req.params;
         const address = yield address_1.Address.findOne({ address: ipAddress });
+        //404 IF ADDRESS DOES NOT EXIST
         if (!(yield address_1.Address.findOne({ address: ipAddress }))) {
             return res.status(404).json({
                 success: false,
                 msg: `No existing IP address at ${ipAddress}`,
             });
         }
-        res
-            .status(401)
-            .json({ success: true, msg: `Status of ${ipAddress}`, data: [address] });
-        console.log(req._read.toString);
-        console.log(req.query);
+        //200 IF READ SUCCESS
+        res.status(200).json({
+            success: true,
+            msg: `Status of ${ipAddress}: ${address.status}`,
+            data: [address],
+        });
     }
     catch (error) {
         res
@@ -58,7 +62,7 @@ const statusById = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             .json({ success: false, msg: `No addresses found`, data: [] });
     }
 });
-exports.statusById = statusById;
+exports.statusByAddr = statusByAddr;
 /**
  * CREATE IP BLOCK
  * @param req Block to add in CIDR notation '10.0.0.1/28'
@@ -67,11 +71,14 @@ exports.statusById = statusById;
 const createIpAddresses = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { address: address, status: status } = req.body;
+        //NETMASK PARSE OF IP STRING
         const block = new netmask_1.Netmask(address);
         let addresses = [];
         block.forEach((ip, long, i) => {
             addresses.push(ip);
         });
+        //201 IF CREATE SUCCESS
+        //FUTURE - FILTER AND APPEND TO EXISTING LIST. EXPLICIT AUTHORIZED DELETE.
         yield address_1.Address.deleteMany({});
         yield Promise.all(addresses.map((addr) => __awaiter(void 0, void 0, void 0, function* () {
             address_1.Address.create({ address: addr, status: 'available' });
@@ -96,7 +103,6 @@ const createIpAddresses = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.createIpAddresses = createIpAddresses;
-//404 IF DOES NOT EXIST, 200 IF FOUND AND UPDATED
 /**
  * PATCH STATUS OF GIVEN ADDRESS, MUST BE OF STRING 'acquired' or 'available'
  * @param req Status to update provide 'address' and 'status'
@@ -105,12 +111,14 @@ exports.createIpAddresses = createIpAddresses;
 const updateStatus = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { address: ipAddress, status: newStatus } = req.body;
+        //404 IF ADDRESS DOES NOT EXIST
         if (!(yield address_1.Address.findOne({ address: ipAddress }))) {
             return res.status(404).json({
                 success: false,
                 msg: `No existing IP address at ${ipAddress}`,
             });
         }
+        //200 IF PATCH SUCCESS
         yield address_1.Address.findOneAndUpdate({ address: ipAddress }, req.body, {
             new: true,
             runValidators: true,

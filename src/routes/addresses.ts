@@ -4,7 +4,7 @@ import {
   createIpAddresses,
   updateStatus,
   deleteAddress,
-  statusById,
+  statusByAddr,
 } from '../controllers/addresses';
 const express = require('express');
 const router = express.Router();
@@ -16,6 +16,6 @@ router
   .patch(updateStatus)
   .delete(deleteAddress, listIpAddresses);
 
-router.route('/:addr').get(statusById).delete(deleteAddress);
+router.route('/:addr').get(statusByAddr).delete(deleteAddress);
 
 module.exports = router;
