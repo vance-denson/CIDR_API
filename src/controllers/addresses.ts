@@ -6,6 +6,11 @@ import { Netmask } from 'netmask';
 
 //GET ALL IP ADDRESSES CURRENTLY IN THE COLLECTION
 
+/**
+ *
+ * @param req
+ * @param res
+ */
 export const listIpAddresses = async (req: Request, res: Response) => {
   try {
     const addresses = await Address.find({});
@@ -84,6 +89,7 @@ export const createIpAddresses = async (req: Request, res: Response) => {
   }
 };
 
+//404 IF DOES NOT EXIST, 200 IF FOUND AND UPDATED
 /**
  * PATCH STATUS OF GIVEN ADDRESS, MUST BE OF STRING 'acquired' or 'available'
  * @param req Status to update provide 'address' and 'status'
@@ -136,19 +142,19 @@ export const deleteAddress = async (req: Request, res: Response) => {
       });
     }
 
-    //418 :D IF DELETE SUCCESS
+    //200 IF DELETE SUCCESS
     if (await Address.findOne({ address: ipBody })) {
       await Address.findOneAndDelete({ address: ipBody });
-      res.status(200).json({
+      res.status(418).json({
         success: true,
-        msg: `IP: ${ipBody} DELETED. The server refuses the attempt to brew coffee with a teapot.`,
+        msg: `IP: ${ipBody} DELETED.`,
         data: [`address removed: ${ipBody}`],
       });
     } else {
       await Address.findOneAndDelete({ address: ipParam });
-      res.status(200).json({
+      res.status(418).json({
         success: true,
-        msg: `IP: ${ipParam} DELETED. The server refuses the attempt to brew coffee with a teapot.`,
+        msg: `IP: ${ipParam} DELETED.`,
         data: [`address removed: ${ipParam}`],
       });
     }

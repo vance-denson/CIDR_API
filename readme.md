@@ -1,16 +1,16 @@
 ## Usage
 
-Supported Routes:
+Routes:
 
 ```
+POST: {{localhost:3000}}/api/cidr
+- body:
+{"address":"10.0.0.1/24"}
+
 GET: {{localhost:3000}}/api/cidr
 
 GET: {{localhost:3000}}/api/cidr?addr=
 - example: {GET /api/cidr?addr=10.0.0.1}
-
-POST: {{localhost:3000}}/api/cidr
-- body:
-{"address":"10.0.0.1/24"}
 
 PATCH: {{localhost:3000}}/api/cidr
 - body:

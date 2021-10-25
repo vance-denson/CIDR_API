@@ -14,6 +14,11 @@ const address_1 = require("../models/address");
 const netmask_1 = require("netmask");
 // const Netmask = require('netmask').Netmask;
 //GET ALL IP ADDRESSES CURRENTLY IN THE COLLECTION
+/**
+ *
+ * @param req
+ * @param res
+ */
 const listIpAddresses = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const addresses = yield address_1.Address.find({});
@@ -91,6 +96,7 @@ const createIpAddresses = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.createIpAddresses = createIpAddresses;
+//404 IF DOES NOT EXIST, 200 IF FOUND AND UPDATED
 /**
  * PATCH STATUS OF GIVEN ADDRESS, MUST BE OF STRING 'acquired' or 'available'
  * @param req Status to update provide 'address' and 'status'
@@ -141,20 +147,20 @@ const deleteAddress = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 msg: `No existing IP address`,
             });
         }
-        //418 :D IF DELETE SUCCESS
+        //200 IF DELETE SUCCESS
         if (yield address_1.Address.findOne({ address: ipBody })) {
             yield address_1.Address.findOneAndDelete({ address: ipBody });
-            res.status(200).json({
+            res.status(418).json({
                 success: true,
-                msg: `IP: ${ipBody} DELETED. The server refuses the attempt to brew coffee with a teapot.`,
+                msg: `IP: ${ipBody} DELETED.`,
                 data: [`address removed: ${ipBody}`],
             });
         }
         else {
             yield address_1.Address.findOneAndDelete({ address: ipParam });
-            res.status(200).json({
+            res.status(418).json({
                 success: true,
-                msg: `IP: ${ipParam} DELETED. The server refuses the attempt to brew coffee with a teapot.`,
+                msg: `IP: ${ipParam} DELETED.`,
                 data: [`address removed: ${ipParam}`],
             });
         }
