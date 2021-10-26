@@ -7,9 +7,6 @@ const addressSchema = new mongoose.Schema({
     required: [true, 'An address must be provided'],
     trim: true,
   },
-  // mask:{
-  //   type: String,
-  // },
   status: {
     type: String,
     default: 'available',

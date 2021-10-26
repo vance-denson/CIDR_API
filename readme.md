@@ -37,7 +37,7 @@ Routes:
 
 ## v202110.1.2 - 10-26-2021
 
-- Unit test for Post, Patch, Delete added (33 so far), separated into invdivdual test files
+- Unit test for Post, Patch, Delete added (42 so far), separated into invdivdual test files
 - Added appropriae javadoc flags for the controller class
 
 ## v202110.1.1 - 10-24-2021
