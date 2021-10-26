@@ -3,9 +3,11 @@ import { Address } from '../models/address';
 import { Netmask } from 'netmask';
 
 /**
- * GET All addresses in collection
  * @param req Default route: void
  * @param res Collection of addresses in DB
+ * @route GET /
+ * @desc GET All addresses in collection
+ * @access PUBLIC
  */
 export const listIpAddresses = async (req: Request, res: Response) => {
   try {
@@ -23,9 +25,11 @@ export const listIpAddresses = async (req: Request, res: Response) => {
 };
 
 /**
- * GET STATUS BY IP ADDRESS
  * @param req IP address from URL param
  * @param res Address requested and current status
+ * @route GET /?:addr
+ * @desc Update status by IP
+ * @access PUBLIC
  */
 export const statusByAddr = async (req: Request, res: Response) => {
   try {
@@ -54,9 +58,11 @@ export const statusByAddr = async (req: Request, res: Response) => {
 };
 
 /**
- * CREATE IP BLOCK
  * @param req Block to add in CIDR notation '10.0.0.1/28'
  * @param res Descrition of created IP block
+ * @route POST /:addr/mask
+ * @desc Create IP block
+ * @access PUBLIC
  */
 export const createIpAddresses = async (req: Request, res: Response) => {
   try {
@@ -85,7 +91,7 @@ export const createIpAddresses = async (req: Request, res: Response) => {
         `Created: ${addresses.length} IPs in block ${address}`,
         `Starting IP: ${block.first}(${block.mask})`,
         `Ending IP: ${block.last}(${block.mask})`,
-        `Hostmask: ${block.hostmask} `,
+        `Hostmask: ${block.hostmask}`,
         `All status: available`,
       ],
     });
@@ -98,9 +104,11 @@ export const createIpAddresses = async (req: Request, res: Response) => {
 };
 
 /**
- * PATCH STATUS OF GIVEN ADDRESS, MUST BE OF STRING 'acquired' or 'available'
  * @param req Status to update provide 'address' and 'status'
  * @param res Update confirmation
+ * @route PATCH /
+ * @desc Patch status of 'address', status must be 'acquired' or 'available'
+ * @access PUBLIC
  */
 export const updateStatus = async (req: Request, res: Response) => {
   try {
@@ -121,16 +129,22 @@ export const updateStatus = async (req: Request, res: Response) => {
     });
     res
       .status(200)
-      .json({ msg: `IP: ${ipAddress} updated to status: ${newStatus}` });
+      .json({
+        success: false,
+        msg: `IP: ${ipAddress} updated to status: ${newStatus}`,
+      });
   } catch (error) {
     res.status(500).json({ msg: error });
   }
 };
 
 /**
- * DELETE
  * @param req Address to remove. Pass 'address' in body ex: {"address":"10.0.0.1"}, or optionally DELETE ON 'api/cidr/10.0.0.1'
  * @param res Delete confirmation
+ * @route DELETE /
+ * @route DELETE /?:addr
+ * @desc Delete using body 'address' OR URI param
+ * @access PUBLIC
  */
 export const deleteAddress = async (req: Request, res: Response) => {
   try {
@@ -155,14 +169,14 @@ export const deleteAddress = async (req: Request, res: Response) => {
     //200 IF DELETE SUCCESS
     if (await Address.findOne({ address: ipBody })) {
       await Address.findOneAndDelete({ address: ipBody });
-      res.status(418).json({
+      res.status(200).json({
         success: true,
         msg: `IP: ${ipBody} DELETED.`,
         data: [`address removed: ${ipBody}`],
       });
     } else {
       await Address.findOneAndDelete({ address: ipParam });
-      res.status(418).json({
+      res.status(200).json({
         success: true,
         msg: `IP: ${ipParam} DELETED.`,
         data: [`address removed: ${ipParam}`],

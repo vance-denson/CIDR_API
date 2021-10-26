@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.app = void 0;
+exports.startServer = exports.app = void 0;
 //MAIN - DB CONNECTION REQUIRED BEFORE LISTEN
 // import express, {Application, Request, Response, NextFunction} from 'express';
 const express = require('express');
@@ -29,4 +29,5 @@ const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
         console.error(error);
     }
 });
-startServer();
+exports.startServer = startServer;
+(0, exports.startServer)();

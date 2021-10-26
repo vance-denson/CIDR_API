@@ -3,8 +3,8 @@
 - Clone
 
 - `npm install`
-
-- `node ./dist/app.js`
+- `node ./dist/app.js` - Run express server
+- `npm run test` - Run assertion libary and execute unit tests
 
 Routes:
 
@@ -35,6 +35,11 @@ Routes:
       {"DELETE ON localhost:3000/api/cidr/10.1.1.1"}
 ```
 
+## v202110.1.2 - 10-26-2021
+
+- Unit test for Post, Patch, Delete added (33 so far), separated into invdivdual test files
+- Added appropriae javadoc flags for the controller class
+
 ## v202110.1.1 - 10-24-2021
 
 - Refactored all to TypeScript
@@ -46,9 +51,10 @@ Added Packages:
 
 ```
   Dependencies and Types added: {
-    "chai": "^4.3.4", - Assert library Postman based on
+    "chai": "^4.3.4", - Assertion library for Postman
     "mocha": "^9.1.3", - Test Runner
-    "supertest": "^6.1.6", - HTTP requests
+    "chai-http": "^4.3.0" - HTTP requests
+    "supertest": "^6.1.6", - HTTP requests (experimenting with alternative)
     "ts-node": "^10.4.0", - Types for node
     "tsconfig-paths": "^3.11.0" - Assists with path resolution
 ```

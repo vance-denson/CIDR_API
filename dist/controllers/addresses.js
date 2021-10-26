@@ -13,9 +13,11 @@ exports.deleteAddress = exports.updateStatus = exports.createIpAddresses = expor
 const address_1 = require("../models/address");
 const netmask_1 = require("netmask");
 /**
- * GET All addresses in collection
  * @param req Default route: void
  * @param res Collection of addresses in DB
+ * @route GET /
+ * @desc GET All addresses in collection
+ * @access PUBLIC
  */
 const listIpAddresses = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -34,9 +36,11 @@ const listIpAddresses = (req, res) => __awaiter(void 0, void 0, void 0, function
 });
 exports.listIpAddresses = listIpAddresses;
 /**
- * GET STATUS BY IP ADDRESS
  * @param req IP address from URL param
  * @param res Address requested and current status
+ * @route GET /?:addr
+ * @desc Update status by IP
+ * @access PUBLIC
  */
 const statusByAddr = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -64,9 +68,11 @@ const statusByAddr = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 });
 exports.statusByAddr = statusByAddr;
 /**
- * CREATE IP BLOCK
  * @param req Block to add in CIDR notation '10.0.0.1/28'
  * @param res Descrition of created IP block
+ * @route POST /:addr/mask
+ * @desc Create IP block
+ * @access PUBLIC
  */
 const createIpAddresses = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -90,7 +96,7 @@ const createIpAddresses = (req, res) => __awaiter(void 0, void 0, void 0, functi
                 `Created: ${addresses.length} IPs in block ${address}`,
                 `Starting IP: ${block.first}(${block.mask})`,
                 `Ending IP: ${block.last}(${block.mask})`,
-                `Hostmask: ${block.hostmask} `,
+                `Hostmask: ${block.hostmask}`,
                 `All status: available`,
             ],
         });
@@ -104,9 +110,11 @@ const createIpAddresses = (req, res) => __awaiter(void 0, void 0, void 0, functi
 });
 exports.createIpAddresses = createIpAddresses;
 /**
- * PATCH STATUS OF GIVEN ADDRESS, MUST BE OF STRING 'acquired' or 'available'
  * @param req Status to update provide 'address' and 'status'
  * @param res Update confirmation
+ * @route PATCH /
+ * @desc Patch status of 'address', status must be 'acquired' or 'available'
+ * @access PUBLIC
  */
 const updateStatus = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -125,7 +133,10 @@ const updateStatus = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         });
         res
             .status(200)
-            .json({ msg: `IP: ${ipAddress} updated to status: ${newStatus}` });
+            .json({
+            success: false,
+            msg: `IP: ${ipAddress} updated to status: ${newStatus}`,
+        });
     }
     catch (error) {
         res.status(500).json({ msg: error });
@@ -133,9 +144,12 @@ const updateStatus = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 });
 exports.updateStatus = updateStatus;
 /**
- * DELETE
  * @param req Address to remove. Pass 'address' in body ex: {"address":"10.0.0.1"}, or optionally DELETE ON 'api/cidr/10.0.0.1'
  * @param res Delete confirmation
+ * @route DELETE /
+ * @route DELETE /?:addr
+ * @desc Delete using body 'address' OR URI param
+ * @access PUBLIC
  */
 const deleteAddress = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -158,7 +172,7 @@ const deleteAddress = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         //200 IF DELETE SUCCESS
         if (yield address_1.Address.findOne({ address: ipBody })) {
             yield address_1.Address.findOneAndDelete({ address: ipBody });
-            res.status(418).json({
+            res.status(200).json({
                 success: true,
                 msg: `IP: ${ipBody} DELETED.`,
                 data: [`address removed: ${ipBody}`],
@@ -166,7 +180,7 @@ const deleteAddress = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         }
         else {
             yield address_1.Address.findOneAndDelete({ address: ipParam });
-            res.status(418).json({
+            res.status(200).json({
                 success: true,
                 msg: `IP: ${ipParam} DELETED.`,
                 data: [`address removed: ${ipParam}`],

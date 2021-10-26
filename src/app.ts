@@ -14,7 +14,7 @@ interface db {
   dbConnection: string;
 }
 
-const startServer = async () => {
+export const startServer = async () => {
   try {
     await dbConnect(<db['dbConnection']>process.env.MONGOOSE_URI);
     app.listen(port, console.log(`App running on localhost:${port}...`));

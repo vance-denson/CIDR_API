@@ -8,7 +8,8 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const dbConnect = (credentials) => {
     try {
         mongoose_1.default.connect(credentials, {}, () => {
-            return console.info(`Successful connection to ${credentials}`);
+            // return console.info(`Successful connection to ${credentials}`);
+            // console.info('Server Started...');
         });
     }
     catch (error) {

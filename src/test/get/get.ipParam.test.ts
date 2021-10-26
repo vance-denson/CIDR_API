@@ -9,7 +9,7 @@ chai.use(chaiHttp);
 startServer;
 const endpoint: string = process.env.TEST_PATH || 'localhost:3000/api/cidr';
 
-describe('-- GET / PATH --', () => {
+describe('-- GET /:IP PATH --', () => {
   describe('HappyPath', () => {
     describe('Setup', () => {
       it('test db created', (done) => {
@@ -24,22 +24,44 @@ describe('-- GET / PATH --', () => {
       });
     });
     describe('Test', () => {
-      it('fetch all IPs', (done) => {
+      it('http status 200', (done) => {
         chai
           .request(endpoint)
-          .get('/')
+          .get('/10.1.1.1')
           .end((err: Error, res: ChaiHttp.Response) => {
             res.should.have.status(200);
             done();
           });
       });
-      it('correct number of IPs fetched', (done) => {
+      it('Success:true', (done) => {
         chai
           .request(endpoint)
-          .get('/')
+          .get('/10.1.1.1')
+          .end((err: Error, res: ChaiHttp.Response) => {
+            res.body.should.have.property('success', true);
+            done();
+          });
+      });
+      it('Correct msg returned', (done) => {
+        chai
+          .request(endpoint)
+          .get('/10.1.1.1')
           .end((err: Error, res: ChaiHttp.Response) => {
             res.should.have.status(200);
-            res.body.should.have.property('addresses').lengthOf(2);
+            res.body.should.have.property(
+              'msg',
+              'Status of 10.1.1.1: available'
+            );
+            done();
+          });
+      });
+      it('Success:true returned', (done) => {
+        chai
+          .request(endpoint)
+          .get('/10.1.1.1')
+          .end((err: Error, res: ChaiHttp.Response) => {
+            res.should.have.status(200);
+            res.body.should.have.property('data').lengthOf(1);
             done();
           });
       });
@@ -47,51 +69,34 @@ describe('-- GET / PATH --', () => {
   });
 
   describe('Not So HappyPath', () => {
-    describe('Setup', () => {
-      it('Delete 1 of 2 elements', (done) => {
-        chai
-          .request(endpoint)
-          .delete('/10.1.1.1')
-          .end((err: Error, res: ChaiHttp.Response) => {
-            res.should.have.status(200);
-            done();
-          });
-      });
-      it('Delete 2 of 2 elements', (done) => {
-        chai
-          .request(endpoint)
-          .delete('/10.1.1.2')
-          .end((err: Error, res: ChaiHttp.Response) => {
-            res.should.have.status(200);
-            done();
-          });
-      });
-    });
     describe('Test', () => {
-      it('404 if fetching empty DB', (done) => {
+      it('404 if fetching IP that does not exist', (done) => {
         chai
           .request(endpoint)
-          .get('/')
+          .get('/9.9.9.9')
           .end((err: Error, res: ChaiHttp.Response) => {
             res.should.have.status(404);
             done();
           });
       });
-      it('Empty DB fetch: Success = false', (done) => {
+      it('Correct msg when fetching non-existent IP', (done) => {
         chai
           .request(endpoint)
-          .get('/')
+          .get('/9.9.9.9')
           .end((err: Error, res: ChaiHttp.Response) => {
-            res.body.should.have.property('success', false);
+            res.body.should.have.property(
+              'msg',
+              'No existing IP address at 9.9.9.9'
+            );
             done();
           });
       });
-      it('No addresses found message provided', (done) => {
+      it('Success: false returned', (done) => {
         chai
           .request(endpoint)
-          .get('/')
+          .get('/9.9.9.9')
           .end((err: Error, res: ChaiHttp.Response) => {
-            res.body.should.have.property('msg', 'No addresses found');
+            res.body.should.have.property('success', false);
             done();
           });
       });
