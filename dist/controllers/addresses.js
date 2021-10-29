@@ -92,13 +92,14 @@ const createIpAddresses = (req, res) => __awaiter(void 0, void 0, void 0, functi
         res.status(201).json({
             success: true,
             msg: `Created address block from ${block.first} to ${block.last} in subnet ${block.mask} (${addresses.length} IPs created), all status set to 'available'`,
-            data: [
-                `Created: ${addresses.length} IPs in block ${address}`,
-                `Starting IP: ${block.first}(${block.mask})`,
-                `Ending IP: ${block.last}(${block.mask})`,
-                `Hostmask: ${block.hostmask}`,
-                `All status: available`,
-            ],
+            data: {
+                block_created: `${address}`,
+                num_IPs_created: `${addresses.length}`,
+                starting_ip: `${block.first}/${block.mask}`,
+                ending_ip: `${block.last}/${block.mask}`,
+                hostmask: `${block.hostmask}`,
+                status_set_to: `available`,
+            },
         });
     }
     catch (error) {
@@ -131,10 +132,8 @@ const updateStatus = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             new: true,
             runValidators: true,
         });
-        res
-            .status(200)
-            .json({
-            success: false,
+        res.status(200).json({
+            success: true,
             msg: `IP: ${ipAddress} updated to status: ${newStatus}`,
         });
     }

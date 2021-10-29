@@ -87,13 +87,14 @@ export const createIpAddresses = async (req: Request, res: Response) => {
     res.status(201).json({
       success: true,
       msg: `Created address block from ${block.first} to ${block.last} in subnet ${block.mask} (${addresses.length} IPs created), all status set to 'available'`,
-      data: [
-        `Created: ${addresses.length} IPs in block ${address}`,
-        `Starting IP: ${block.first}(${block.mask})`,
-        `Ending IP: ${block.last}(${block.mask})`,
-        `Hostmask: ${block.hostmask}`,
-        `All status: available`,
-      ],
+      data: {
+        block_created: `${address}`,
+        num_IPs_created: `${addresses.length}`,
+        starting_ip: `${block.first}/${block.mask}`,
+        ending_ip: `${block.last}/${block.mask}`,
+        hostmask: `${block.hostmask}`,
+        status_set_to: `available`,
+      },
     });
   } catch (error) {
     res.status(500).json({
@@ -127,12 +128,10 @@ export const updateStatus = async (req: Request, res: Response) => {
       new: true,
       runValidators: true,
     });
-    res
-      .status(200)
-      .json({
-        success: false,
-        msg: `IP: ${ipAddress} updated to status: ${newStatus}`,
-      });
+    res.status(200).json({
+      success: true,
+      msg: `IP: ${ipAddress} updated to status: ${newStatus}`,
+    });
   } catch (error) {
     res.status(500).json({ msg: error });
   }

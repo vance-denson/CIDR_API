@@ -1,0 +1,448 @@
+{
+	"info": {
+		"_postman_id": "741c3128-e877-4c73-9933-0c9fd4e0bd47",
+		"name": "API Auto Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "POST ip block",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json()\r",
+							"let expected_block = pm.variables.get('block1')\r",
+							"let expected_block_size = '2'\r",
+							"let expected_status = 'available'\r",
+							"\r",
+							"pm.test(\"201 on create block\", () => {\r",
+							"    pm.response.to.have.status(201)\r",
+							"    pm.variables.set('block_created', response.data.block_created)\r",
+							"    pm.variables.set('num_IPs_created', response.data.num_IPs_created)\r",
+							"    pm.variables.set('status', response.data.status_set_to)\r",
+							"})\r",
+							"pm.test(\"correct block created\", () => {\r",
+							"    pm.expect(response.data.block_created).to.eq(expected_block)\r",
+							"})\r",
+							"pm.test(\"correct block size\", () => {\r",
+							"    pm.expect(response.data.num_IPs_created).to.eq(expected_block_size)\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"address\":\"{{block1}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/cidr",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"cidr"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE existing block - Body",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJSON = pm.response.json();\r",
+							"const host = pm.variables.get('host');\r",
+							"const ip1 = pm.variables.get('ip1')\r",
+							"const ip2 = pm.variables.get('ip2')\r",
+							"\r",
+							"\r",
+							"pm.test(\"DELETE status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"DELETE msg Key Value is correct\", function () {\r",
+							"    let deleteMsg = `IP: ${ip1} DELETED.`\r",
+							"    pm.expect(responseJSON.msg).to.eql(deleteMsg);\r",
+							"});\r",
+							"pm.test(\"DELETE success Key Value = true\", function () {\r",
+							"    pm.expect(responseJSON.success).to.eql(true);\r",
+							"});\r",
+							"pm.test(\"DELETE Data Object type correct\", function () {\r",
+							"    pm.expect(responseJSON.data).to.be.a('array');\r",
+							"});\r",
+							"pm.test(\"DELETE Data Object contains correct message\", function () {\r",
+							"    let dataContent = `address removed: ${ip1}`\r",
+							"    pm.expect(responseJSON.data[0]).to.eql(dataContent);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const block = pm.variables.get('block1')\r",
+							"const host = pm.variables.get('host')\r",
+							"\r",
+							"pm.test(`initialize data`, ()=>{\r",
+							"    pm.sendRequest({\r",
+							"        url: `${host}/api/cidr`,\r",
+							"        method: `POST`,\r",
+							"        header: {\r",
+							"            'content-type': 'application/json',\r",
+							"        },\r",
+							"        body: {\r",
+							"            mode: 'raw',\r",
+							"            raw: JSON.stringify({address: `${block}`}),\r",
+							"        }\r",
+							"    }, (err, res) => {\r",
+							"        pm.expect(res).to.have.status(201)\r",
+							"    })\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"address\":\"{{ip1}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/cidr/",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"cidr",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "{{host}}/api/cidr/?:addr",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const ip2 = pm.variables.get('ip2')\r",
+							"const response = pm.response.json()\r",
+							"let expected_msg = `IP: ${ip2} DELETED.`\r",
+							"let expected_data = `address removed: ${ip2}`\r",
+							"\r",
+							"pm.test(\"Delete second address\", () => {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"correct data returned\", () => {\r",
+							"    pm.expect(response).to.have.property('success', true)\r",
+							"    pm.expect(response.msg).to.eql(expected_msg)\r",
+							"    pm.expect(response.data[0]).to.eql(expected_data)\r",
+							"})\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/cidr/10.1.1.2",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"cidr",
+						"10.1.1.2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "{{host}}/api/cidr",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json()\r",
+							"\r",
+							"pm.test(\"reading empty store = false\", () => {\r",
+							"    pm.expect(response.success).to.eq(false)\r",
+							"})\r",
+							"pm.test(\"empty store msg correct\", () => {\r",
+							"    pm.expect(response.msg).to.eq(\"No addresses found\")\r",
+							"})\r",
+							"pm.test(\"empty store data = null\", () => {\r",
+							"    pm.expect(response.data[0]).to.eq(null)\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/cidr",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"cidr"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "{{lhost}}/api/cidr/?:addr",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let block = '10.1.1.1/30'\r",
+							"let host = pm.variables.get('host')\r",
+							"\r",
+							"pm.test(`initialize data`, ()=>{\r",
+							"    pm.sendRequest({\r",
+							"        url: `${host}/api/cidr`,\r",
+							"        method: `POST`,\r",
+							"        header: {\r",
+							"            'content-type': 'application/json',\r",
+							"        },\r",
+							"        body: {\r",
+							"            mode: 'raw',\r",
+							"            raw: JSON.stringify({address: `${block}`}),\r",
+							"        }\r",
+							"    }, (err, res) => {\r",
+							"        pm.expect(res).to.have.status(201)\r",
+							"        console.log(res)\r",
+							"    })\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let response = pm.response.json()\r",
+							"const ip1 = pm.variables.get('ip1')\r",
+							"\r",
+							"pm.test(\"fetching single ip success = true\", ()=>{\r",
+							"    pm.expect(response.success).to.eq(true)\r",
+							"})\r",
+							"pm.test(\"correct msg/status displayed\", ()=>{\r",
+							"    pm.expect(response.msg).to.eq(`Status of ${ip1}: available`)\r",
+							"})\r",
+							"pm.test(\"data length correct\", ()=>{\r",
+							"    pm.expect(response.data.length).eq(1)\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}/api/cidr/10.1.1.1",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"cidr",
+						"10.1.1.1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "{{host}}/api/cidr",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// const ip1 = pm.variables.get('ip1')\r",
+							"// const host = pm.globals.get('host')\r",
+							"// let response;\r",
+							"\r",
+							"// const postRequest = {\r",
+							"//   url: `${host}/api/cidr`,\r",
+							"//   method: 'PATCH',\r",
+							"//   header: {\r",
+							"//     'Content-Type': 'application/json',\r",
+							"//   },\r",
+							"//   body: {\r",
+							"//     mode: 'raw',\r",
+							"//     raw: JSON.stringify({ address: `${ip1}`, status: 'available' })\r",
+							"//   }\r",
+							"// };\r",
+							"// pm.sendRequest(postRequest, (error, resp) => {\r",
+							"//   console.log(error ? error : resp.json());\r",
+							"// pm.expect(resp).to.have.property('success', true);\r",
+							"// });\r",
+							"\r",
+							"// pm.test('response should be okay to process', () => {\r",
+							"//     // pm.expect(error).to.equal(null);\r",
+							"//     // pm.expect(response).to.have.property('status', 'OK');\r",
+							"//   });\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"// // pm.test(`change status to available`, ()=>{\r",
+							"// //     pm.sendRequest({\r",
+							"// //         url: `${host}/api/cidr`,\r",
+							"// //         method: `PATCH`,\r",
+							"// //          headers: {\r",
+							"// //             'content-type': 'application/json',\r",
+							"// //         },\r",
+							"// //         body: {\r",
+							"// //             mode: 'raw',\r",
+							"// //             raw: JSON.stringify({address: `${ip1}`, status: 'available'}),\r",
+							"// //         }\r",
+							"// //     }, (err, res) => {\r",
+							"// //         pm.expect(res).to.have.status(404)\r",
+							"// //     })\r",
+							"// // })\r",
+							"// // pm.test(`change status to available`, ()=>{\r",
+							"// //     pm.sendRequest({\r",
+							"// //         url: `${host}/api/cidr`,\r",
+							"// //         method: `PATCH`,\r",
+							"// //          headers: {\r",
+							"// //             'content-type': 'application/json',\r",
+							"// //         },\r",
+							"// //         body: {\r",
+							"// //             mode: 'raw',\r",
+							"// //             raw: JSON.stringify({address: `${ip1}`, status: 'acquired'}),\r",
+							"// //         }\r",
+							"// //     }, (err, res) => {\r",
+							"// //         pm.expect(res).to.have.status(404)\r",
+							"// //     })\r",
+							"// // })"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "// {\r\n//     \"status\":\"acquired\",\r\n//     \"address\":\"10.1.1.2\"\r\n// }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/cidr/",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"cidr",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "block",
+			"value": "{{block1}}"
+		}
+	]
+}
